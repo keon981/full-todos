@@ -1,0 +1,16 @@
+services:
+  develop:
+    container_name: "full-todos-api" # docker run --name full-todos-api
+    image: "full-todos-api"     # docker build -t full-todos:latest
+    build: .                    # 使用當前目錄的 Dockerfile
+    ports:
+      - "2026:8000"             # port 映射
+    develop:
+      watch:
+        - action: sync          # 程式碼變更 → 自動同步
+          path: .               # 監控整個目錄
+          target: /app          # 同步到容器內的 /app
+          ignore:
+            - .venv/            # 排除虛擬環境（不需要同步）
+        - action: rebuild       # pyproject.toml 變更 → 自動重建
+          path: ./pyproject.toml
