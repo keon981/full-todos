@@ -1,7 +1,7 @@
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
-export default function Page() {
+export default function InboxPage() {
   return (
     <>
       <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
@@ -10,7 +10,7 @@ export default function Page() {
           orientation="vertical"
           className="mr-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-lg font-semibold">今天</h1>
+        <h1 className="text-lg font-semibold">收件匣</h1>
       </header>
       <div className="flex-1 p-6">
         <p className="text-sm text-muted-foreground">
@@ -18,5 +18,5 @@ export default function Page() {
         </p>
       </div>
     </>
-  );
+  )
 }
