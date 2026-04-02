@@ -16,18 +16,27 @@
 
 - [X] 2-1. 🤖 Docker Compose 建立 PostgreSQL 容器
 - [X] 2-2. 🤖 FastAPI 連接 PostgreSQL（SQLAlchemy / SQLModel）
-- [ ] 2-3. 🤖 設定 CORS（允許 Next.js 跨域請求）
+- [X] 2-3. 🤖 設定 CORS（允許 Next.js 跨域請求）
 
 ## Phase 3：Feature — 收件匣 CRUD
 
-- [ ] 3-1. 🤖 後端：建立 Todo model + migration
-- [ ] 3-2. 🤝 後端：實作 POST /todos（Claude 示範結構，你寫核心邏輯）
-- [ ] 3-3. 👤 後端：實作 GET /todos（參考 POST 自己寫）
-- [ ] 3-4. 👤 後端：實作 PATCH /todos/{id}、DELETE /todos/{id}
-- [ ] 3-5. 👤 後端：錯誤處理（404、驗證錯誤）
-- [ ] 3-6. 🤝 前端：收件匣頁面串接 API（Claude 示範 fetch 模式，你完成列表渲染）
-- [ ] 3-7. 👤 前端：新增任務表單
-- [ ] 3-8. 👤 前端：完成/刪除任務操作
+### 單一 Model — 先用 Todo 跑通全部 CRUD
+- [X] 3-1. 🤖 後端：建立 Todo model + migration
+- [X] 3-2. 🤝 後端：實作 POST /todos
+- [X] 3-3. 👤 後端：用 APIRouter 重構路由結構
+- [ ] 3-4. 👤 後端：實作 GET /todos（列表）
+- [ ] 3-5. 👤 後端：實作 GET /todos/{id}（單筆）+ 404 處理
+- [ ] 3-6. 👤 後端：實作 DELETE /todos/{id}（soft delete）+ 404 處理
+
+### 多個 Model — 重構 + 補 PATCH
+- [ ] 3-7. 🤖 後端：拆分 Model（TodoBase / TodoCreate / TodoPublic / TodoUpdate）
+- [ ] 3-8. 🤝 後端：重構現有 endpoint 使用新 Model
+- [ ] 3-9. 👤 後端：實作 PATCH /todos/{id}（需要 TodoUpdate）
+
+### 前後端串接
+- [ ] 3-10. 🤝 前端：收件匣頁面串接 API（Claude 示範 fetch 模式，你完成列表渲染）
+- [ ] 3-11. 👤 前端：新增任務表單
+- [ ] 3-12. 👤 前端：完成/刪除任務操作
 
 ## Phase 4：Feature — 專案分類
 

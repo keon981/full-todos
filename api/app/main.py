@@ -8,6 +8,7 @@ from sqlmodel import Session, select
 
 from app.config import get_settings
 from app.database import create_db_and_tables, engine
+from app.routers import todos
 
 
 @asynccontextmanager
@@ -27,6 +28,8 @@ app.add_middleware(
     allow_methods=settings.cors_allow_methods,
     allow_headers=settings.cors_allow_headers,
 )
+
+app.include_router(todos.router, prefix="/todos", tags=["todos"])
 
 
 @app.get("/")
