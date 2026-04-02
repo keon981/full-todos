@@ -1,0 +1,9 @@
+- [Learning Plan](project_learning_plan.md) — Full-stack TODO app learning phases, frontend is shell, focus on FastAPI
+- [Docs for Learning](feedback_docs_for_learning.md) — Write implementation plans to docs/ as learning guides
+- [No Node.js Backend](feedback_no_nodejs_backend.md) — Never use Node.js backend tools (Prisma, Express) as analogies
+- [Test Before Asking](feedback_test_before_asking.md) — Run and verify code yourself before asking user to execute
+- [Fix Docs With Code](feedback_fix_docs_with_code.md) — When fixing code errors, immediately update related docs too
+- [No Premature Code](feedback_no_premature_code.md) — Only create code when actually needed, don't pre-build unused types
+- [Follow Learning Pace](feedback_follow_learning_pace.md) — Foundation first, never skip ahead to advanced patterns
+- [FastAPI Tutorial Progress](reference_fastapi_tutorial_progress.md) — SQL databases chapter progress tracked at .claude/fastapi-tutorial-progress.md
+- [Verify Before Claiming](feedback_verify_before_claiming.md) — Check completion status before claiming docs missing or tasks done
