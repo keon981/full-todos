@@ -1,8 +1,8 @@
 from sqlmodel import Session, SQLModel, create_engine
 
-DATABASE_URL = "postgresql+psycopg://root:123456@localhost:5555/todos_db"
+from app.config import get_settings
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(get_settings().database_url)
 
 
 def create_db_and_tables():

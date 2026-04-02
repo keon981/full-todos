@@ -2,9 +2,11 @@ from contextlib import asynccontextmanager
 
 import requests
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
+from app.config import get_settings
 from app.database import create_db_and_tables, engine
 
 
@@ -15,6 +17,16 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+settings = get_settings()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=settings.cors_allow_credentials,
+    allow_methods=settings.cors_allow_methods,
+    allow_headers=settings.cors_allow_headers,
+)
 
 
 @app.get("/")
