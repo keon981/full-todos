@@ -1,8 +1,20 @@
+from contextlib import asynccontextmanager
+
 import requests
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqlmodel import Session, select
 
-app = FastAPI()
+from app.database import create_db_and_tables, engine
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
@@ -25,4 +37,8 @@ async def get_client_ip(request: Request):
     return JSONResponse(content={"ip": get_ip_address(), "ll": "ㄋㄋ"})
 
 
-# end def
+@app.get("/health")
+def health():
+    with Session(engine) as session:
+        session.exec(select(1))
+        return {"status": "healthy"}

@@ -8,10 +8,10 @@
 
 **Query Parameters:**
 
-| 參數 | 類型 | 必填 | 說明 |
-|------|------|------|------|
-| project_id | int | 否 | 篩選特定專案的任務 |
-| is_completed | bool | 否 | 篩選已完成/未完成 |
+| 參數         | 類型 | 必填 | 說明               |
+| ------------ | ---- | ---- | ------------------ |
+| project_id   | int  | 否   | 篩選特定專案的任務 |
+| is_completed | bool | 否   | 篩選已完成/未完成  |
 
 **Response 200:**
 
@@ -43,11 +43,11 @@
 }
 ```
 
-| 欄位 | 類型 | 必填 | 說明 |
-|------|------|------|------|
-| title | string | 是 | 任務名稱，最少 1 字 |
-| description | string | 否 | 任務描述，預設 "" |
-| project_id | int \| null | 否 | 所屬專案，預設 null（收件匣） |
+| 欄位        | 類型        | 必填 | 說明                          |
+| ----------- | ----------- | ---- | ----------------------------- |
+| title       | string      | 是   | 任務名稱，最少 1 字           |
+| description | string      | 否   | 任務描述，預設 ""             |
+| project_id  | int \| null | 否   | 所屬專案，預設 null（收件匣） |
 
 **Response 201:**
 
@@ -79,24 +79,72 @@
 
 ---
 
-### PUT /todos/{id} — 更新任務
+### PATCH /todos/{id} — 更新任務
 
-> TODO(human): 參考上方格式，自己設計這個 endpoint
-> 提示：哪些欄位應該可以被更新？全部都是必填嗎？
+**Request Body:**
+
+```json
+{
+  "title": "買豆漿"
+}
+```
+
+```json
+{
+   "is_completed": true
+}
+```
+
+| 欄位         | 類型          | 必填 | 說明                              |
+| ------------ | ------------- | ---- | --------------------------------- |
+| title        | string\|null  | 否   | 更新任務名稱，預設 null           |
+| description  | string\| null | 否   | 更新任務描述，預設 null（不更新） |
+| project_id   | int \| null   | 否   | 更新所屬專案，預設 null（收件匣） |
+| is_completed | bool \| null  | 否   | 更新已完成/未完成                 |
+
+**Response 200:**
+
+```json
+{
+  "id": 1,
+  "title": "買豆漿",
+  "description": "去全聯買低脂牛奶",
+  "is_completed": true,
+  "project_id": null,
+  "created_at": "2026-03-31T10:00:00Z",
+  "updated_at": "2026-03-31T14:00:00Z"
+}
+```
+
+**Response 404（id不存在）:**
+
+```json
+{
+   "detail": "Todo not found"
+}
+```
 
 ---
 
 ### DELETE /todos/{id} — 刪除任務
 
-> TODO(human): 參考上方格式，自己設計這個 endpoint
-> 提示：成功刪除應該回什麼 status code？body 要回什麼？
+(新增 get `/trash`，到時候可以 undo 復原不小心刪除的。這裏的 Delete 只是移動到 trash 區域而不是真正刪除)
+
+**Response 204:**
+
+空回傳
+
+**Response 404（id不存在）:**
+
+```json
+{
+   "detail": "Todo not found"
+}
+```
 
 ---
 
-### PATCH /todos/{id}/complete — 切換完成狀態
 
-> TODO(human): 這個 endpoint 是必要的嗎？還是用 PUT 就能做到？
-> 寫下你的想法和決定。
 
 ---
 
@@ -104,12 +152,13 @@
 
 ### todos
 
-| 欄位 | 類型 | 說明 |
-|------|------|------|
-| id | SERIAL PRIMARY KEY | 自動遞增 |
-| title | VARCHAR(255) NOT NULL | 任務名稱 |
-| description | TEXT DEFAULT '' | 任務描述 |
-| is_completed | BOOLEAN DEFAULT false | 是否已完成 |
-| project_id | INT REFERENCES projects(id) | 所屬專案（nullable） |
-| created_at | TIMESTAMP DEFAULT now() | 建立時間 |
-| updated_at | TIMESTAMP DEFAULT now() | 更新時間 |
+| 欄位         | 類型                        | 說明                 |
+| ------------ | --------------------------- | -------------------- |
+| id           | SERIAL PRIMARY KEY          | 自動遞增             |
+| title        | VARCHAR(255) NOT NULL       | 任務名稱             |
+| description  | TEXT DEFAULT ''             | 任務描述             |
+| is_completed | BOOLEAN DEFAULT false       | 是否已完成           |
+| project_id   | INT REFERENCES projects(id) | 所屬專案（nullable） |
+| created_at   | TIMESTAMP DEFAULT now()     | 建立時間             |
+| updated_at   | TIMESTAMP DEFAULT now()     | 更新時間             |
+| deleted_at   | TIMESTAMP DEFAULT null      | 刪除時間             |
