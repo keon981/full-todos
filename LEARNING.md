@@ -24,9 +24,10 @@
 - [X] 3-1. 🤖 後端：建立 Todo model + migration
 - [X] 3-2. 🤝 後端：實作 POST /todos
 - [X] 3-3. 👤 後端：用 APIRouter 重構路由結構
-- [ ] 3-4. 👤 後端：實作 GET /todos（列表）
-- [ ] 3-5. 👤 後端：實作 GET /todos/{id}（單筆）+ 404 處理
+- [X] 3-4. 👤 後端：實作 GET /todos（列表）
 - [ ] 3-6. 👤 後端：實作 DELETE /todos/{id}（soft delete）+ 404 處理
+
+> 3-5 已移除 — todo app 無 deep linking/refresh 單筆/第三方 API 需求，實務不需要 `GET /todos/{id}`。學習目標（path param、`session.get`、`HTTPException`）會在 3-6 DELETE 涵蓋。詳見 `docs/phase-3-inbox-crud.md`。
 
 ### 多個 Model — 重構 + 補 PATCH
 - [ ] 3-7. 🤖 後端：拆分 Model（TodoBase / TodoCreate / TodoPublic / TodoUpdate）

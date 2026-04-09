@@ -6,6 +6,7 @@ from sqlmodel import select
 from app.database.db import SessionDep
 from app.database.models import Todo
 from app.schemas import TodoCreateRequest, TodosGetRequest
+from app.utils import now_utc
 
 router = APIRouter()
 
@@ -22,29 +23,30 @@ def get_all_todos(
     return session.exec(query).all()
 
 
-@router.get("/{todo_id}", status_code=status.HTTP_200_OK)
-def get_todo(
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_todo(todo: TodoCreateRequest, session: SessionDep):
+    todo_session = Todo.model_validate(todo)
+    session.add(todo_session)
+    session.commit()
+    session.refresh(todo_session)
+    return todo_session
+
+
+@router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_todo(
     todo_id: int,
     session: SessionDep,
 ):
+    # TODO(human): 實作 soft delete 邏輯
+    # 1. 如果 todo 是 None 或已經被 soft delete (deleted_at 不是 None)，
+    #    raise HTTPException(status_code=404, detail="Todo not found")
+    # 2. 執行 soft delete：對 todo.deleted_at 賦值 now_utc()
+    #    ← 這不是 session.delete(todo)，而是「更新欄位」
+    # 3. session.commit() 把變更寫入 DB
+    # 4. 204 No Content 慣例不回 body，不需要 return
     todo = session.get(Todo, todo_id)
-    # TODO(human): 如果 todo 不存在，或被 soft delete 了，都要回 404
-    # 提示：
-    # 1. session.get() 找不到 primary key 時回傳 None
-    # 2. 被 soft delete 的 todo 會有 todo.deleted_at 不是 None
-    # 3. 用 raise HTTPException(status_code=404, detail="Todo not found")
-    #    來拋出 404。注意是 raise 不是 return
-    return todo
+    if todo is None or todo.deleted_at is not None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Not Find")
 
-
-@router.post("", status_code=status.HTTP_201_CREATED)
-def create_todo(todo: TodoCreateRequest, session: SessionDep):
-    session.add(todo)
+    todo.deleted_at = now_utc()
     session.commit()
-    session.refresh(todo)
-    return todo
-
-
-@router.delete("", status_code=status.HTTP_204_NO_CONTENT)
-def delete_todo():
-    pass

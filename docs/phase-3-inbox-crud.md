@@ -181,3 +181,40 @@ if 條件B is not None:
 ### 筆記
 
 > 
+
+---
+
+## 設計決定：為什麼不做 `GET /todos/{id}`
+
+原本 LEARNING.md 的 3-5 要做「`GET /todos/{id}`（單筆）+ 404 處理」，實作到一半發現：**這個 todo app 實務上根本用不到**。
+
+### 使用者情境分析
+
+- 前端流程：開 app → `GET /todos` 拿到列表 → 資料都在前端 → 點某筆 → 已經有資料，直接 PATCH/DELETE 用手上的 id
+- 沒有 deep linking（不分享 todo URL）
+- 沒有「refresh 單筆」需求
+- 沒有第三方 API 消費者
+
+### 何時才需要 `GET /resource/{id}`？
+
+| 場景 | 需要 GET single? | 舉例 |
+|---|---|---|
+| Deep linking | ✅ | Notion page URL、Linear issue URL |
+| Public API | ✅ | Stripe `GET /charges/{id}` |
+| Large list + refresh 單筆 | ✅ | 社群平台 feed |
+| Admin / audit | ✅ | 後台工具 |
+| **私人 todo app** | **❌** | **（你的情況）** |
+
+### 教科書 CRUD ≠ 實務 API 設計
+
+「REST 完整 5 verb (list/single/create/update/delete)」是**模板**不是**戒律**。API 設計原則是「**有人會拿 id 需要完整資料，且手上沒 list**」才做這個 endpoint。todo app 沒這個情境就別做。
+
+### 學習目標沒流失
+
+原本靠 3-5 想學的三個東西會在 **3-6 DELETE** 全部涵蓋：
+
+- ✅ **Path parameter** (`/{todo_id}`)
+- ✅ **`session.get()`** 用 pk 取單筆
+- ✅ **`HTTPException`** 處理 404
+
+額外還學到 soft delete 的寫入邏輯 (`deleted_at = now_utc()`) 跟 204 No Content 慣例。

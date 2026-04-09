@@ -1,10 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlmodel import Field, SQLModel
 
-
-def now_utc():
-    return datetime.now(timezone.utc)
+from app.utils import now_utc
 
 
 class Todo(SQLModel, table=True):
