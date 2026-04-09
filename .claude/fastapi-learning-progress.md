@@ -76,7 +76,7 @@ https://fastapi.tiangolo.com/zh/tutorial/
 - [X] **CORS**
 - [ ] **SQL（關係型）數據庫**
   - [X] 安裝 SQLModel
-  - [ ] 創建含有單一模型的應用: Model 定義（Field, table=True）、Engine、Session dependency、啟動建表、POST（add/commit/refresh）已完成，尚未學 select 查詢、GET one、DELETE
+  - [ ] 創建含有單一模型的應用: Model 定義（Field, table=True）、Engine、Session dependency、啟動建表、POST（add/commit/refresh）、select 查詢（GET list + 漸進式 where 組合 + `== None # noqa: E711`）已完成，尚未學 GET one、DELETE
   - [ ] 使用多個模型更新應用
 - [ ] **更大的應用 - 多個文件**
   - [X] 文件結構示例

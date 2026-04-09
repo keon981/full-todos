@@ -5,7 +5,8 @@
       "Bash(docker:*)",
       "Bash(kill:*)",
       "Bash(pkill:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(lsof -ti:8000)"
     ]
   },
   "outputStyle": "Learning"

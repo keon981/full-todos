@@ -1,12 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import select
-
 from app.database.db import SessionDep
 from app.database.models import Todo
 from app.schemas import TodoCreateRequest, TodosGetRequest
 from app.utils import now_utc
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import select
 
 router = APIRouter()
 
