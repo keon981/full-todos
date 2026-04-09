@@ -1,35 +1,50 @@
-from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
-from sqlmodel import Session
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import select
 
-from app.database import get_session
-from app.models import Todo
+from app.database.db import SessionDep
+from app.database.models import Todo
+from app.schemas import TodoCreateRequest, TodosGetRequest
 
 router = APIRouter()
 
-SessionDep = Annotated[Session, Depends(get_session)]
 
-
-@router.get("")
-def list_todos(
+@router.get("", status_code=status.HTTP_200_OK)
+def get_all_todos(
     session: SessionDep,
-    project_id: int | None = None,
-    is_completed: bool | None = None,
+    filters: Annotated[TodosGetRequest, Depends()],
 ):
-    # TODO(human): 實作查詢邏輯
-    # 1. 用 select(Todo) 建立查詢
-    # 2. 排除已 soft delete 的項目（deleted_at 不是 None 的）
-    # 3. 如果有傳 project_id，加上篩選條件
-    # 4. 如果有傳 is_completed，加上篩選條件
-    # 5. 用 session.exec() 執行查詢，回傳 .all()
-    pass
+    query = select(Todo).where(
+        Todo.deleted_at == None,  # noqa: E711
+        *filters.apply(),
+    )
+    return session.exec(query).all()
 
 
-@router.post("", status_code=HTTPStatus.CREATED)
-def create_todo(todo: Todo, session: SessionDep):
+@router.get("/{todo_id}", status_code=status.HTTP_200_OK)
+def get_todo(
+    todo_id: int,
+    session: SessionDep,
+):
+    todo = session.get(Todo, todo_id)
+    # TODO(human): 如果 todo 不存在，或被 soft delete 了，都要回 404
+    # 提示：
+    # 1. session.get() 找不到 primary key 時回傳 None
+    # 2. 被 soft delete 的 todo 會有 todo.deleted_at 不是 None
+    # 3. 用 raise HTTPException(status_code=404, detail="Todo not found")
+    #    來拋出 404。注意是 raise 不是 return
+    return todo
+
+
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_todo(todo: TodoCreateRequest, session: SessionDep):
     session.add(todo)
     session.commit()
     session.refresh(todo)
     return todo
+
+
+@router.delete("", status_code=status.HTTP_204_NO_CONTENT)
+def delete_todo():
+    pass
