@@ -8,7 +8,7 @@ from app.config import get_settings
 engine = create_engine(get_settings().database_url, echo=True)
 
 
-def create_db_and_tables():
+def create_table():
     SQLModel.metadata.create_all(engine)
 
 

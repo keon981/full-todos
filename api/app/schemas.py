@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel
 
 from app.database.models import Todo
 
 
-class TodosGetRequest(BaseModel):
+class TodosGetRequest(SQLModel):
     project_id: int | None = None
     is_completed: bool | None = None
 
@@ -16,6 +16,13 @@ class TodosGetRequest(BaseModel):
         return [column == value for column, value in mapping if value is not None]
 
 
-class TodoCreateRequest(BaseModel):
+class TodoCreateRequest(SQLModel):
     title: str
     is_completed: bool = False
+
+
+class TodoUpdateRequest(SQLModel):
+    title: str | None = None
+    description: str | None = None
+    is_completed: bool | None = None
+    project_id: int | None = None

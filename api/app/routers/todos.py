@@ -1,11 +1,12 @@
 from typing import Annotated
 
-from app.database.db import SessionDep
-from app.database.models import Todo
-from app.schemas import TodoCreateRequest, TodosGetRequest
-from app.utils import now_utc
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import select
+
+from app.database.db import SessionDep
+from app.database.models import Todo
+from app.schemas import TodoCreateRequest, TodosGetRequest, TodoUpdateRequest
+from app.utils import now_utc
 
 router = APIRouter()
 
@@ -31,21 +32,36 @@ def create_todo(todo: TodoCreateRequest, session: SessionDep):
     return todo_session
 
 
+# def get_todo_id(todo_id: int, session: SessionDep):
+
+
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_todo(
     todo_id: int,
     session: SessionDep,
 ):
-    # TODO(human): 實作 soft delete 邏輯
-    # 1. 如果 todo 是 None 或已經被 soft delete (deleted_at 不是 None)，
-    #    raise HTTPException(status_code=404, detail="Todo not found")
-    # 2. 執行 soft delete：對 todo.deleted_at 賦值 now_utc()
-    #    ← 這不是 session.delete(todo)，而是「更新欄位」
-    # 3. session.commit() 把變更寫入 DB
-    # 4. 204 No Content 慣例不回 body，不需要 return
     todo = session.get(Todo, todo_id)
     if todo is None or todo.deleted_at is not None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Not Find")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Todo not found")
 
     todo.deleted_at = now_utc()
     session.commit()
+
+
+@router.patch("/{todo_id}", status_code=status.HTTP_200_OK)
+def update_todo(
+    todo_id: int,
+    session: SessionDep,
+    todo_update: TodoUpdateRequest,
+):
+    todo = session.get(Todo, todo_id)
+    if todo is None or todo.deleted_at is not None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Todo not found")
+
+    for column, value in todo_update.model_dump(exclude_none=True).items():
+        setattr(todo, column, value)
+    todo.updated_at = now_utc()
+    session.commit()
+    session.refresh(todo)
+
+    return todo

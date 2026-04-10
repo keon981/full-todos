@@ -15,7 +15,7 @@
 - [X] 0-6. 👤 決定是否需要 PATCH /todos/{id}/complete，寫下理由
 
 ### User
-- [ ] 0-7. 🤖 設計 users table
+- [X] 0-7. 🤖 設計 users table
 - [ ] 0-8. 🤖 設計 POST /auth/register
 - [ ] 0-9. 🤖 設計 POST /auth/login
 - [ ] 0-10. 🤖 設計 POST /auth/logout
@@ -71,7 +71,7 @@
 - [X] 6-3. 🤝 實作 POST /todos
 - [X] 6-4. 👤 實作 GET /todos（含 filter 篩選 + 排除 soft deleted）
 - [X] 6-5. 👤 實作 DELETE /todos/{id}（soft delete + 404）
-- [ ] 6-6. 👤 實作 PATCH /todos/{id}
+- [X] 6-6. 👤 實作 PATCH /todos/{id}
 
 ## Phase 7：User Auth + Todo 加認證保護
 

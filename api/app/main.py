@@ -7,13 +7,13 @@ from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
 from app.config import get_settings
-from app.database.db import create_db_and_tables, engine
+from app.database.db import create_table, engine
 from app.routers import todos
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_db_and_tables()
+    create_table()
     yield
 
 

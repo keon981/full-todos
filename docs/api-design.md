@@ -2,7 +2,7 @@
 
 > Base URL: `http://localhost:2026`
 
-## Todos
+## Todos API Schemas
 
 ### GET /todos — 取得任務列表
 
@@ -145,10 +145,12 @@
 ---
 
 
+## User API Schemas
+
 
 ---
 
-## DB Schema
+## DB Models
 
 ### todos
 
@@ -158,7 +160,17 @@
 | title        | VARCHAR(255) NOT NULL       | 任務名稱             |
 | description  | TEXT DEFAULT ''             | 任務描述             |
 | is_completed | BOOLEAN DEFAULT false       | 是否已完成           |
+| owner_id     | INT REFERENCES users(id)    | 擁有者（哪個使用者的） |
 | project_id   | INT REFERENCES projects(id) | 所屬專案（nullable） |
 | created_at   | TIMESTAMP DEFAULT now()     | 建立時間             |
 | updated_at   | TIMESTAMP DEFAULT now()     | 更新時間             |
 | deleted_at   | TIMESTAMP DEFAULT null      | 刪除時間             |
+
+### users
+
+
+| 欄位            | 類型                         | 說明       |
+| --------------- | ---------------------------- | ---------- |
+| id              | SERIAL PRIMARY KEY           | 自動遞增   |
+| username        | VARCHAR(255) NOT NULL UNIQUE | 使用者名稱 |
+| hashed_password | VARCHAR(255) NOT NULL        | 密碼哈希值 |
