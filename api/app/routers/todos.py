@@ -1,12 +1,11 @@
 from typing import Annotated
 
+from app.database.db import SessionDep
+from app.database.models.todos import Todo
+from app.schemas.todos import TodoCreateRequest, TodosGetRequest, TodoUpdateRequest
+from app.utils import now_utc
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import select
-
-from app.database.db import SessionDep
-from app.database.models import Todo
-from app.schemas import TodoCreateRequest, TodosGetRequest, TodoUpdateRequest
-from app.utils import now_utc
 
 router = APIRouter()
 
@@ -64,4 +63,6 @@ def update_todo(
     session.commit()
     session.refresh(todo)
 
+    return todo
+    return todo
     return todo

@@ -49,7 +49,7 @@
 ## Phase 3：ORM 模型（`app/database/models.py`）
 
 - [X] 3-1. 🤖 定義 `Todo` SQLModel class（含 `id`、`title`、`description`、`is_completed`、`project_id` 預留欄位、`created_at`/`updated_at`/`deleted_at`）
-- [ ] 3-2. 🤖 定義 `User` SQLModel class（含 `id`、`username`、`hashed_password`）
+- [X] 3-2. 🤖 定義 `User` SQLModel class（含 `id`、`username`、`hashed_password`）
 - [ ] 3-3. 👤 定義 `Project` SQLModel class（含 `id`、`name`、`description`、`owner_id`）
 
 ## Phase 4：Pydantic Schemas（`app/schemas.py`）
@@ -57,7 +57,7 @@
 - [X] 4-1. 🤖 定義 `TodoCreateRequest`
 - [X] 4-2. 🤖 定義 `TodosGetRequest`
 - [X] 4-3. 🤖 在 `TodosGetRequest` 寫 `apply()` 漸進式 WHERE 方法
-- [ ] 4-4. 🤖 定義 `UserCreate`（`username`、`password`；register 與 login 共用）
+- [X] 4-4. 🤖 定義 `UserCreate`（`username`、`password`；register 與 login 共用）
 - [ ] 4-5. 👤 定義 `ProjectCreateRequest`
 - [ ] 4-6. 👤 定義 `ProjectsGetRequest`
 

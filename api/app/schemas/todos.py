@@ -1,6 +1,5 @@
+from app.database.models.todos import Todo
 from sqlmodel import SQLModel
-
-from app.database.models import Todo
 
 
 class TodosGetRequest(SQLModel):
