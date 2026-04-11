@@ -7,6 +7,7 @@
 ## Phase 0：API 設計（前置）
 
 ### Todo
+
 - [X] 0-1. 🤖 設計 todos table
 - [X] 0-2. 🤖 設計 GET /todos
 - [X] 0-3. 🤖 設計 POST /todos
@@ -14,13 +15,15 @@
 - [X] 0-5. 👤 設計 DELETE /todos/{id}
 - [X] 0-6. 👤 決定是否需要 PATCH /todos/{id}/complete，寫下理由
 
-### User
-- [X] 0-7. 🤖 設計 users table
-- [ ] 0-8. 🤖 設計 POST /auth/register
-- [ ] 0-9. 🤖 設計 POST /auth/login
-- [ ] 0-10. 🤖 設計 POST /auth/logout
+### User(Phase 7 時再做)
 
-### Project
+- [X] 0-7. 🤖 設計 users table
+- [X] 0-8. 🤖 設計 POST /auth/register
+- [X] 0-9. 🤖 設計 POST /auth/login
+- [X] 0-10. 🤖 設計 DELETE /auth/logout
+
+### Project(Phase 8 再做)
+
 - [ ] 0-11. 👤 設計 projects table
 - [ ] 0-12. 👤 設計 POST /projects
 - [ ] 0-13. 👤 設計 GET /projects
@@ -78,6 +81,7 @@
 > MVP 用 **bcrypt 雜湊密碼 + cookie 存 user_id**（照 GfG 最簡單做法）。進階 JWT 留到 Phase 10。
 
 ### 套件與工具
+
 - [ ] 7-1. 🤖 安裝 `passlib[bcrypt]`
 - [ ] 7-2. 🤖 建立 `app/auth.py`
 - [ ] 7-3. 🤖 在 `app/auth.py` 寫 `pwd_context = CryptContext(schemes=["bcrypt"])`
@@ -85,11 +89,13 @@
 - [ ] 7-5. 🤝 在 `main.py` 加 `app.include_router(auth.router, prefix="/auth")`
 
 ### Auth endpoints
+
 - [ ] 7-6. 🤝 實作 POST /auth/register
 - [ ] 7-7. 🤝 實作 POST /auth/login
 - [ ] 7-8. 🤝 實作 POST /auth/logout
 
 ### 套用認證到 Todo
+
 - [ ] 7-9. 👤 寫 `get_current_user` dependency（從 cookie 讀 user_id → 查 User → 無則 401）
 - [ ] 7-10. 👤 在 Todo model 加 `owner_id` FK 欄位
 - [ ] 7-11. 👤 GET /todos 加 `Depends(get_current_user)` 並只回當前 user 的 todos
@@ -100,16 +106,19 @@
 ## Phase 8：Projects CRUD endpoints
 
 ### Router 設置
+
 - [ ] 8-1. 👤 建立 `app/routers/projects.py`（空 `APIRouter`）
 - [ ] 8-2. 👤 在 `main.py` 加 `app.include_router(projects.router, prefix="/projects")`
 
 ### CRUD endpoints
+
 - [ ] 8-3. 👤 實作 POST /projects（含 `Depends(get_current_user)`）
 - [ ] 8-4. 👤 實作 GET /projects（含 `Depends(get_current_user)`）
 - [ ] 8-5. 👤 實作 PATCH /projects/{id}（含 `Depends(get_current_user)`）
 - [ ] 8-6. 👤 實作 DELETE /projects/{id}（soft delete，含 `Depends(get_current_user)`）
 
 ### Todo ↔ Project 關聯與測試
+
 - [ ] 8-7. 👤 在 Project model 加 `owner_id` FK 欄位
 - [ ] 8-8. 👤 把 Todo 的 `project_id` 從預留欄位改成 FK 約束
 - [ ] 8-9. 👤 為 GET /todos 的 `project_id` 篩選參數寫測試
@@ -133,6 +142,7 @@
 > MVP 完成後才回頭做的「品質提升」。把 MVP 為了速度而粗糙的地方改成正式寫法。
 
 ### Todo Model 拆分
+
 - [ ] 10-1. 🤖 定義 `TodoBase`（共用欄位）
 - [ ] 10-2. 🤖 定義 `TodoCreate`（POST 用，繼承 `TodoBase`）
 - [ ] 10-3. 🤖 定義 `TodoPublic`（response 用，含 `id` 與時間戳）
@@ -142,21 +152,25 @@
 - [ ] 10-7. 🤝 重構 PATCH /todos/{id} 簽名為 `TodoUpdate → TodoPublic`
 
 ### 時間戳改用 DB 端
+
 - [ ] 10-8. 👤 `created_at` 改用 `Field(sa_column_kwargs={"server_default": func.now()})`
 - [ ] 10-9. 👤 `updated_at` 改用 `Field(sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()})`
 - [ ] 10-10. 👤 移除 `app/utils.py` 的 `now_utc()`（如果不再被引用）
 
 ### 錯誤處理統一
+
 - [ ] 10-11. 👤 定義統一錯誤 response schema（`{"detail": str, "code": str}`）
 - [ ] 10-12. 👤 把所有 `HTTPException` 訊息改用統一格式
 
 ### Auth 升級為 JWT
+
 - [ ] 10-13. 🤝 安裝 `python-jose[cryptography]`
 - [ ] 10-14. 🤝 在 `app/auth.py` 寫 `create_access_token(data, expires)` 函式
 - [ ] 10-15. 🤝 改 POST /auth/login 回傳 `{access_token, token_type}` 而非 set cookie
 - [ ] 10-16. 🤝 改 `get_current_user` 從 `Authorization: Bearer <token>` header 解 JWT
 
 ### 環境變數分離
+
 - [ ] 10-17. 👤 建立 `.env.dev`
 - [ ] 10-18. 👤 建立 `.env.prod`
 - [ ] 10-19. 👤 `Settings.model_config` 根據 `APP_ENV` 環境變數選擇 `.env` 檔
@@ -164,6 +178,7 @@
 ---
 
 > **備註 — 與舊版 LEARNING.md 的差異（舊版備份在 `LEARNING-old.md`）**
+>
 > - **結構風格**：照 GfG「水平層」風格——每個概念 Phase 跨所有功能（Todo + User + Project）。功能順序（Todo → Auth → Projects）反映在 endpoint Phase 的順序。
 > - **概念分類靠 Phase 名稱**：Phase 3 ORM 模型、Phase 4 Schemas 等概念 Phase 直接列所有對應內容（Todo + User + Project），不靠子標題分類
 > - **生產化重構獨立 Phase 10**：Model 拆分、DB 時間戳、JWT、環境變數分離等優化統一延後到 MVP 完成後

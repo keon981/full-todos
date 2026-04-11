@@ -35,6 +35,12 @@
 
 **Request Body:**
 
+| 欄位        | 類型        | 必填 | 說明                          |
+| ----------- | ----------- | ---- | ----------------------------- |
+| title       | string      | 是   | 任務名稱，最少 1 字           |
+| description | string      | 否   | 任務描述，預設 ""             |
+| project_id  | int \| null | 否   | 所屬專案，預設 null（收件匣） |
+
 ```json
 {
   "title": "買牛奶",
@@ -42,12 +48,6 @@
   "project_id": null
 }
 ```
-
-| 欄位        | 類型        | 必填 | 說明                          |
-| ----------- | ----------- | ---- | ----------------------------- |
-| title       | string      | 是   | 任務名稱，最少 1 字           |
-| description | string      | 否   | 任務描述，預設 ""             |
-| project_id  | int \| null | 否   | 所屬專案，預設 null（收件匣） |
 
 **Response 201:**
 
@@ -148,23 +148,166 @@
 ## User API Schemas
 
 
+### POST /auth/register — 註冊
+
+**Request Body:**
+
+| 欄位     | 類型   | 必填 | 說明                               |
+| -------- | ------ | ---- | ---------------------------------- |
+| username | string | 是   | 使用者名稱（MVP階段不使用帳號）    |
+| password | string | 是   | 使用者密碼，至少 6 個字元 |
+
+```json
+{
+  "username": "root",
+  "password": "123456"
+}
+```
+
+**Response 201:**
+
+```json
+{
+  "detail": "註冊成功",
+  "user": {
+    "id": 123,
+    "username": "root"
+  }
+}
+```
+
+**Response 409（衝突）:**
+
+```json
+{
+  "detail": "使用者名稱已被註冊"
+}
+```
+
+**Response 422（驗證錯誤）:**
+
+> 如密碼強度不足、驗證碼錯誤
+
+```json
+{
+  "detail": [
+    {
+      "loc": ["body", "password"],
+      "msg": "Field required",
+      "type": "missing"
+    }
+  ]
+}
+```
+
+---
+
+### POST /auth/login — 登入
+
+**Request Body:**
+
+| 欄位     | 類型   | 必填 | 說明                               |
+| -------- | ------ | ---- | ---------------------------------- |
+| username | string | 是   | 使用者名稱（MVP階段不使用帳號）    |
+| password | string | 是   | 使用者密碼，至少 6 個字元 |
+
+```json
+{
+  "username": "root",
+  "password": "123456"
+}
+```
+
+**Response 200:**
+
+> MVP：登入成功時透過 `Set-Cookie` header 設定 `user_id` cookie
+
+```json
+{
+  "detail": "登入成功",
+  "user": {
+    "id": 123,
+    "username": "root"
+  }
+}
+```
+
+> Phase 10：改回傳 JWT token
+
+```json
+{
+  "detail": "登入成功",
+  "user": {
+    "id": 123,
+    "username": "root"
+  },
+  "token": "abc..."
+}
+```
+
+**Response 400（登入失敗）:**
+
+```json
+{
+  "detail": "帳號或密碼錯誤"
+}
+```
+
+**Response 422（驗證錯誤）:**
+
+> 如密碼強度不足、驗證碼錯誤
+
+```json
+{
+  "detail": [
+    {
+      "loc": ["body", "password"],
+      "msg": "Field required",
+      "type": "missing"
+    }
+  ]
+}
+```
+
+---
+
+### DELETE /auth/logout — 登出
+
+> MVP：清除 `user_id` cookie，無需 request body
+
+**Response 204:**
+
+空回傳
+
+> Phase 10：改為驗證 JWT token
+
+| 欄位  | 類型   | 必填 | 說明             |
+| ----- | ------ | ---- | ---------------- |
+| token | string | 是   | 設置為登出已到期 |
+
+```json
+{
+  "token": "abc..."
+}
+```
+
 ---
 
 ## DB Models
 
 ### todos
 
-| 欄位         | 類型                        | 說明                 |
-| ------------ | --------------------------- | -------------------- |
-| id           | SERIAL PRIMARY KEY          | 自動遞增             |
-| title        | VARCHAR(255) NOT NULL       | 任務名稱             |
-| description  | TEXT DEFAULT ''             | 任務描述             |
-| is_completed | BOOLEAN DEFAULT false       | 是否已完成           |
+| 欄位         | 類型                        | 說明                   |
+| ------------ | --------------------------- | ---------------------- |
+| id           | SERIAL PRIMARY KEY          | 自動遞增               |
+| title        | VARCHAR(255) NOT NULL       | 任務名稱               |
+| description  | TEXT DEFAULT ''             | 任務描述               |
+| is_completed | BOOLEAN DEFAULT false       | 是否已完成             |
 | owner_id     | INT REFERENCES users(id)    | 擁有者（哪個使用者的） |
-| project_id   | INT REFERENCES projects(id) | 所屬專案（nullable） |
-| created_at   | TIMESTAMP DEFAULT now()     | 建立時間             |
-| updated_at   | TIMESTAMP DEFAULT now()     | 更新時間             |
-| deleted_at   | TIMESTAMP DEFAULT null      | 刪除時間             |
+| project_id   | INT REFERENCES projects(id) | 所屬專案（nullable）   |
+| created_at   | TIMESTAMP DEFAULT now()     | 建立時間               |
+| updated_at   | TIMESTAMP DEFAULT now()     | 更新時間               |
+| deleted_at   | TIMESTAMP DEFAULT null      | 刪除時間               |
 
 ### users
 
