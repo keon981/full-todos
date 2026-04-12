@@ -1,14 +1,13 @@
 from contextlib import asynccontextmanager
 
 import requests
+from app.config import get_settings
+from app.database.db import create_table, engine
+from app.routers import auth, todos
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
-
-from app.config import get_settings
-from app.database.db import create_table, engine
-from app.routers import todos
 
 
 @asynccontextmanager
@@ -30,6 +29,7 @@ app.add_middleware(
 )
 
 app.include_router(todos.router, prefix="/todos", tags=["todos"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 
 @app.get("/")
