@@ -1,21 +1,33 @@
+import { CheckboxItems } from "@/components/item/checkbox.item";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Suspense } from "react";
+// import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export default function Page() {
+const fakeTodos = [
+  {
+    "id": 1,
+    "title": "買牛奶",
+    "description": "去全聯買低脂牛奶",
+    "is_completed": false,
+    "project_id": null,
+    "created_at": "2026-03-31T10:00:00Z",
+    "updated_at": "2026-03-31T10:00:00Z"
+  }
+]
+
+export default function TodoPage() {
   return (
     <>
-      <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator
-          orientation="vertical"
-          className="mr-2 data-[orientation=vertical]:h-4"
-        />
-        <h1 className="text-lg font-semibold">今天</h1>
+      <header className="border-b p-4">
+        <h1 className="text-3xl text-center font-semibold">Todo</h1>
       </header>
-      <div className="flex-1 p-6">
-        <p className="text-sm text-muted-foreground">
-          串接 API 後，任務會顯示在這裡
-        </p>
+      <div className="p-6 mx-auto">
+        <Button>+ Add New Todo</Button>
+        <Separator />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CheckboxItems />
+        </Suspense>
       </div>
     </>
   );
