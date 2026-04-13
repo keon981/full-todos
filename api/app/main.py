@@ -1,8 +1,35 @@
-import requests
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+import requests
+from app.config import get_settings
+from app.database.db import create_table, engine
+from app.routers import auth, todos
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlmodel import Session, select
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_table()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+settings = get_settings()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=settings.cors_allow_credentials,
+    allow_methods=settings.cors_allow_methods,
+    allow_headers=settings.cors_allow_headers,
+)
+
+app.include_router(todos.router, prefix="/todos", tags=["todos"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 
 @app.get("/")
@@ -25,4 +52,8 @@ async def get_client_ip(request: Request):
     return JSONResponse(content={"ip": get_ip_address(), "ll": "ㄋㄋ"})
 
 
-# end def
+@app.get("/health")
+def health():
+    with Session(engine) as session:
+        session.exec(select(1))
+        return {"status": "healthy"}

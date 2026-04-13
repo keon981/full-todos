@@ -1,16 +1,40 @@
 services:
-  develop:
-    container_name: "full-todos-api" # docker run --name full-todos-api
-    image: "full-todos-api"     # docker build -t full-todos:latest
-    build: .                    # 使用當前目錄的 Dockerfile
+#   develop:
+#     container_name: "full-todos-api"
+#     image: "full-todos-api"
+#     build: .
+#     ports:
+#       - "2026:8000"
+#     environment:
+#       - DATABASE_URL=${DATABASE_URL}
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     develop:
+#       watch:
+#         - action: sync
+#           path: .
+#           target: /app
+#           ignore:
+#             - .venv/
+#         - action: rebuild
+#           path: ./pyproject.toml
+  db:
+    container_name: "full-todos-db"
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - "2026:8000"             # port 映射
-    develop:
-      watch:
-        - action: sync          # 程式碼變更 → 自動同步
-          path: .               # 監控整個目錄
-          target: /app          # 同步到容器內的 /app
-          ignore:
-            - .venv/            # 排除虛擬環境（不需要同步）
-        - action: rebuild       # pyproject.toml 變更 → 自動重建
-          path: ./pyproject.toml
+      - "5555:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
