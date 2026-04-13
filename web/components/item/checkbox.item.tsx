@@ -14,18 +14,29 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { Checkbox } from "../ui/checkbox"
-import { TodoData } from "@/types/todo.type"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { CheckedTodo, TodoData } from "@/types/todo.type"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
+import { fetchHandler } from "@/lib/fetch"
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 function CheckboxItems() {
-  const { data } = useSuspenseQuery<TodoData[]>({
+  const { data, refetch } = useSuspenseQuery<TodoData[]>({
     queryKey: ['todos'],
     queryFn: async () => {
-      const res = await fetch(`${apiUrl}/api/todos`)
+      const res = await fetchHandler('api/todos')
       return res.json()
     }
+  })
+
+  const { mutate } = useMutation({
+    mutationFn: async ({ id, checked }: CheckedTodo) => {
+      const res = await fetchHandler(`api/todos/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ is_completed: checked }),
+      })
+      return res.json()
+    },
+    onSuccess: refetch,
   })
 
   return (
@@ -33,7 +44,12 @@ function CheckboxItems() {
       {data?.map((item) => (
         <Item key={item.id} variant="outline" className="items-start">
           <ItemMedia>
-            <Checkbox />
+            <Checkbox
+              checked={item.is_completed}
+              onCheckedChange={(checked) => {
+                mutate({ id: item.id, checked: !!checked })
+              }}
+            />
           </ItemMedia>
           <ItemContent className="gap-1">
             <ItemTitle>{item.title}</ItemTitle>

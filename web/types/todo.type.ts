@@ -11,14 +11,20 @@ const todoSchema = z.object({
   project_id: z.number().nullable(),
 });
 
-const todoCreateSchema = z.object({
+const todoFormSchema = z.object({
   title: z.string(),
   description: z.string().nullable().optional(),
 })
 
+const todoCheckedSchema = z.object({
+  id: z.number(),
+  checked: z.boolean(),
+})
+
 // type
 type TodoData = z.infer<typeof todoSchema>
-type CreateTodoData = z.infer<typeof todoCreateSchema>
+type CreateTodoData = z.infer<typeof todoFormSchema>
+type CheckedTodo = z.infer<typeof todoCheckedSchema>
 
-export { todoSchema, todoCreateSchema }
-export type { TodoData, CreateTodoData }
+export { todoSchema, todoFormSchema, todoCheckedSchema }
+export type { TodoData, CreateTodoData, CheckedTodo }

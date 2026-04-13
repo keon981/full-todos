@@ -19,19 +19,19 @@ import { CreateTodoData, todoFormSchema } from '@/types/todo.type'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
-async function createTodo(formData: CreateTodoData) {
-  const res = await fetchHandler(`api/todos`, {
+async function editTodoMutation(formData: CreateTodoData) {
+  const res = await fetchHandler('api/todos', {
     method: 'POST',
     body: JSON.stringify(formData),
   })
   return res.json()
 }
 
-function AddTodo() {
+function EditTodo() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const queryClient = useQueryClient()
   const { mutate } = useMutation({
-    mutationFn: createTodo,
+    mutationFn: editTodoMutation,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['todos'] })
       setDialogOpen(false)
@@ -83,4 +83,4 @@ function AddTodo() {
   )
 }
 
-export default AddTodo
+export default EditTodo
