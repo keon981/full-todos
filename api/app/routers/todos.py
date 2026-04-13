@@ -1,11 +1,12 @@
 from typing import Annotated
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import select
+
 from app.database.db import SessionDep
 from app.database.models.todos import Todo
 from app.schemas.todos import TodoCreateRequest, TodosGetRequest, TodoUpdateRequest
 from app.utils import now_utc
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import select
 
 router = APIRouter()
 
@@ -15,9 +16,13 @@ def get_all_todos(
     session: SessionDep,
     filters: Annotated[TodosGetRequest, Depends()],
 ):
-    query = select(Todo).where(
-        Todo.deleted_at == None,  # noqa: E711
-        *filters.apply(),
+    query = (
+        select(Todo)
+        .where(
+            Todo.deleted_at == None,  # noqa: E711
+            *filters.apply(),
+        )
+        .order_by(Todo.created_at)  # type: ignore
     )
     return session.exec(query).all()
 
@@ -63,6 +68,4 @@ def update_todo(
     session.commit()
     session.refresh(todo)
 
-    return todo
-    return todo
     return todo

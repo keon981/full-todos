@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from '@/components/ui/textarea'
 import { fetchHandler } from '@/lib/fetch'
-import { CreateTodoData, todoFormSchema } from '@/types/todo.type'
+import { CreateTodoData, todoCreateSchema } from '@/types/todo.type'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -41,7 +41,7 @@ function AddTodo() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    const data = todoFormSchema.parse(Object.fromEntries(formData.entries()))
+    const data = todoCreateSchema.parse(Object.fromEntries(formData.entries()))
     mutate(data)
   }
 

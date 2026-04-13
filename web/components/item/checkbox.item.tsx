@@ -1,9 +1,5 @@
 "use client"
 
-import * as React from "react"
-import { IconEdit } from "@tabler/icons-react"
-
-import { Button } from "@/components/ui/button"
 import {
   Item,
   ItemActions,
@@ -17,6 +13,7 @@ import { Checkbox } from "../ui/checkbox"
 import { CheckedTodo, TodoData } from "@/types/todo.type"
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { fetchHandler } from "@/lib/fetch"
+import EditTodo from "@/app/features/todos/EditTodo"
 
 
 function CheckboxItems() {
@@ -56,9 +53,7 @@ function CheckboxItems() {
             <ItemDescription>{item.description}</ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <IconEdit />
-            </Button>
+            <EditTodo key={`${item.id}-${item.updated_at}`} data={item} />
           </ItemActions>
         </Item>
       ))}

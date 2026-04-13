@@ -80,7 +80,7 @@
 
 - [X] 7-1. 🤝 收件匣頁面：列出 todos（GET /todos + 渲染列表）
 - [X] 7-2. 👤 收件匣：新增任務功能（表單元件 + POST /todos 接線）
-- [ ] 7-3. 👤 收件匣：完成狀態 checkbox（PATCH /todos/{id}）
+- [X] 7-3. 👤 收件匣：完成狀態 checkbox（PATCH /todos/{id}）
 - [ ] 7-4. 👤 收件匣：刪除任務按鈕（DELETE /todos/{id}）
 
 ## Phase 8：User Auth（後端 + 前端）
