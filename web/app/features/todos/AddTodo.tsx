@@ -14,34 +14,49 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from '@/components/ui/textarea'
-import { useMutation } from '@tanstack/react-query'
+import { CreateTodoData, todoCreateSchema } from '@/types/todo.type'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+async function createTodo(formData: CreateTodoData) {
+  const res = await fetch(`${apiUrl}/api/todos`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData),
+  })
+  if (!res.ok) throw new Error('Failed to create todo')
+  return res.json()
+}
 
 function AddTodo() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const queryClient = useQueryClient()
   const { mutate } = useMutation({
-    mutationFn: async () => {
-      const res = await fetch('/api/todos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: 'New Todo',
-          description: 'Description for new todo'
-        })
-      })
-      return res.json()
-    }
+    mutationFn: createTodo,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+      setDialogOpen(false)
+    },
   })
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const data = todoCreateSchema.parse(Object.fromEntries(formData.entries()))
+    mutate(data)
+  }
+
   return (
-    <Dialog>
-      <form className='text-end'>
-        <DialogTrigger asChild>
-          <Button>+ Add New Todo</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogTrigger asChild>
+        <Button>+ Add New Todo</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-sm">
+        <form className='grid gap-6' onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Add Todo</DialogTitle>
             <DialogDescription>
@@ -67,8 +82,8 @@ function AddTodo() {
             </DialogClose>
             <Button type="submit">Create</Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   )
 }

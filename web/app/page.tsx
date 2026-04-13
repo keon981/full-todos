@@ -1,6 +1,7 @@
+import { Suspense } from "react";
+
 import { CheckboxItems } from "@/components/item/checkbox.item";
 import { Separator } from "@/components/ui/separator";
-import { Suspense } from "react";
 import AddTodo from "./features/todos/AddTodo";
 // import { SidebarTrigger } from "@/components/ui/sidebar";
 

@@ -14,16 +14,16 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { Checkbox } from "../ui/checkbox"
-import { Todo } from "@/types/todo.type"
+import { TodoData } from "@/types/todo.type"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 function CheckboxItems() {
-  const { data } = useSuspenseQuery<Todo[]>({
+  const { data } = useSuspenseQuery<TodoData[]>({
     queryKey: ['todos'],
     queryFn: async () => {
-      const res = await fetch(apiUrl + '/api/todos')
+      const res = await fetch(`${apiUrl}/api/todos`)
       return res.json()
     }
   })
@@ -31,7 +31,7 @@ function CheckboxItems() {
   return (
     <ItemGroup className="max-w-sm mx-auto">
       {data?.map((item) => (
-        <Item key={item.id} variant="outline">
+        <Item key={item.id} variant="outline" className="items-start">
           <ItemMedia>
             <Checkbox />
           </ItemMedia>

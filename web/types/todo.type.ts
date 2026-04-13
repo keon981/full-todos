@@ -17,11 +17,8 @@ const todoCreateSchema = z.object({
 })
 
 // type
-type Todo = z.infer<typeof todoSchema>
-type TodoCreateTpye = z.infer<typeof todoCreateSchema>
+type TodoData = z.infer<typeof todoSchema>
+type CreateTodoData = z.infer<typeof todoCreateSchema>
 
 export { todoSchema, todoCreateSchema }
-export type {
-  Todo,
-  TodoCreateTpye
-}
+export type { TodoData, CreateTodoData }
