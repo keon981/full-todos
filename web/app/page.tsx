@@ -1,21 +1,22 @@
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Suspense } from "react";
 
-export default function Page() {
+import { TodoItems } from "@/app/features/todos/TodoItems";
+import { Separator } from "@/components/ui/separator";
+import AddTodo from "./features/todos/AddTodo";
+// import { SidebarTrigger } from "@/components/ui/sidebar";
+
+export default function TodoPage() {
   return (
     <>
-      <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator
-          orientation="vertical"
-          className="mr-2 data-[orientation=vertical]:h-4"
-        />
-        <h1 className="text-lg font-semibold">今天</h1>
+      <header className="border-b p-4">
+        <h1 className="text-3xl text-center font-semibold">Todo</h1>
       </header>
-      <div className="flex-1 p-6">
-        <p className="text-sm text-muted-foreground">
-          串接 API 後，任務會顯示在這裡
-        </p>
+      <div className="p-6 mx-auto">
+        <AddTodo />
+        <Separator />
+        <Suspense fallback={<div>Loading...</div>}>
+          <TodoItems />
+        </Suspense>
       </div>
     </>
   );

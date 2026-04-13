@@ -1,13 +1,12 @@
 from datetime import datetime
 
-from sqlmodel import Field, SQLModel
-
 from app.utils import now_utc
+from sqlmodel import Field, SQLModel
 
 
 class TodoBase(SQLModel):
     title: str = Field(max_length=255)
-    description: str = ""
+    description: str | None = None
     is_completed: bool = False
     project_id: int | None = None
 

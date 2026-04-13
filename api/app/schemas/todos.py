@@ -17,6 +17,7 @@ class TodosGetRequest(SQLModel):
 
 class TodoCreateRequest(SQLModel):
     title: str
+    description: str | None = None
     is_completed: bool = False
 
 
