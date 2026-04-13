@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { CheckboxItems } from "@/components/item/checkbox.item";
+import { TodoItems } from "@/app/features/todos/TodoItems";
 import { Separator } from "@/components/ui/separator";
 import AddTodo from "./features/todos/AddTodo";
 // import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -15,7 +15,7 @@ export default function TodoPage() {
         <AddTodo />
         <Separator />
         <Suspense fallback={<div>Loading...</div>}>
-          <CheckboxItems />
+          <TodoItems />
         </Suspense>
       </div>
     </>

@@ -9,30 +9,26 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
-import { Checkbox } from "../ui/checkbox"
+import { Checkbox } from "../../../components/ui/checkbox"
 import { CheckedTodo, TodoData } from "@/types/todo.type"
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
 import { fetchHandler } from "@/lib/fetch"
 import EditTodo from "@/app/features/todos/EditTodo"
+import { DeleteDialog } from "./DeleteDialog"
 
-
-function CheckboxItems() {
+function TodoItems() {
   const { data, refetch } = useSuspenseQuery<TodoData[]>({
     queryKey: ['todos'],
-    queryFn: async () => {
-      const res = await fetchHandler('api/todos')
-      return res.json()
-    }
+    queryFn: getTodoHandler
   })
 
-  const { mutate } = useMutation({
-    mutationFn: async ({ id, checked }: CheckedTodo) => {
-      const res = await fetchHandler(`api/todos/${id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ is_completed: checked }),
-      })
-      return res.json()
-    },
+  const { mutate: checkedMutate } = useMutation({
+    mutationFn: checkedTodoHandler,
+    onSuccess: refetch,
+  })
+
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: deleteTodoHandler,
     onSuccess: refetch,
   })
 
@@ -44,7 +40,7 @@ function CheckboxItems() {
             <Checkbox
               checked={item.is_completed}
               onCheckedChange={(checked) => {
-                mutate({ id: item.id, checked: !!checked })
+                checkedMutate({ id: item.id, checked: !!checked })
               }}
             />
           </ItemMedia>
@@ -54,6 +50,7 @@ function CheckboxItems() {
           </ItemContent>
           <ItemActions>
             <EditTodo key={`${item.id}-${item.updated_at}`} data={item} />
+            <DeleteDialog onDelete={() => deleteMutate(item.id)} />
           </ItemActions>
         </Item>
       ))}
@@ -61,4 +58,23 @@ function CheckboxItems() {
   )
 }
 
-export { CheckboxItems }
+export { TodoItems }
+
+async function getTodoHandler() {
+  const res = await fetchHandler('api/todos')
+  return res.json()
+}
+
+async function checkedTodoHandler({ id, checked }: CheckedTodo) {
+  const res = await fetchHandler(`api/todos/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_completed: checked }),
+  })
+  return res.json()
+}
+
+async function deleteTodoHandler(id: number) {
+  await fetchHandler(`api/todos/${id}`, {
+    method: "DELETE"
+  })
+}

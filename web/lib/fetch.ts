@@ -1,5 +1,3 @@
-
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export async function fetchHandler(input: string | URL | Request, init?: RequestInit) {
